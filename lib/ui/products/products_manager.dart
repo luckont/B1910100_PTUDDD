@@ -1,7 +1,11 @@
 import '../../models/product.dart';
 
 class ProductsManager {
+    Product findById(String id){
+      return _items.firstWhere((prod) => prod.id == id);
+    }
   final List<Product> _items = [
+
     Product(
       id: 'p1',
       title: 'Red Shirt',
