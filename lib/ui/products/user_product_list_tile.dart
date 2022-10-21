@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myshop/ui/products/products_manager.dart';
+import 'package:myshop/ui/screens.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
@@ -54,9 +54,12 @@ class UserProductListTitle extends StatelessWidget {
 
   Widget buildEditButton(BuildContext context){
     return IconButton(
-            icon: const Icon(Icons.edit),
+      icon: const Icon(Icons.edit),
       onPressed: () {
-        print('Go to edit product screen');
+        Navigator.of(context).pushNamed(
+          EditProductScreen.routeName,
+          arguments: product.id,
+        );
       },
       color: Theme.of(context).primaryColor,
     );

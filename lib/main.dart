@@ -8,6 +8,7 @@ import 'ui/products/product_overview_screen.dart';
 import 'ui/products/user_products_screen.dart';
 import 'ui/cart/cart_screen.dart';
 import 'ui/orders/orders_screen.dart';
+import 'ui/products/edit_product_screen.dart';
 
 void main(List<String> args) {
   runApp(const MyApp());
@@ -50,12 +51,14 @@ class MyApp extends StatelessWidget {
               (ctx) => const UserProductsScreen(),
         },
         onGenerateRoute: (settings) {
-          if (settings.name == ProductDetailSceen.routeName){
-            final productId = settings.arguments as String;
+          if (settings.name == EditProductScreen.routeName){
+            final productId = settings.arguments as String?;
             return MaterialPageRoute(
               builder: (ctx) {
-                return ProductDetailSceen(
-                  ctx.read<ProductsManager>().findById(productId),
+                return EditProductScreen(
+                  productId != null
+                  ? ctx.read<ProductsManager>().findById(productId)
+                  : null,
                 );
               },
             );
