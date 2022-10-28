@@ -58,7 +58,7 @@ class Product {
   }
 
   static Product fromJson(Map<String, dynamic> json){
-    return new Product(
+    return Product(
       id: json['title'],
       title: json['title'],
       description: json['description'],

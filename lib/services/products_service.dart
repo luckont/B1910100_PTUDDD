@@ -7,12 +7,12 @@ import 'dart:convert';
 class ProductsService extends FirebaseService {
   ProductsService([AuthToken? authToken]) : super(authToken);
 
-  Future<List<Product>> fectProducts([bool filterByUser = false]) async{
+  Future<List<Product>> fetchProducts([bool filterByUser = false]) async{
     final List<Product> products = [];
 
     try {
       final filters = 
-        filterByUser ? 'orderBy = "creatorId"&equalTo="$userId"' : '';
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
 
       final productsUrl = 
         Uri.parse('$databaseUrl/products.json?auth=$token&$filters');
@@ -71,5 +71,41 @@ class ProductsService extends FirebaseService {
         print(error);
         return null;
     }
+  }
+
+  Future<bool> updateProduct(Product product) async {
+    try {
+      final url = 
+        Uri.parse('$databaseUrl/products/${product.id}.json?auth=$token');
+      final response = await http.patch(
+        url,
+        body: json.encode(product.toJson()),
+      );
+
+      if (response.statusCode!= 200) {
+        throw Exception(json.decode(response.body)['error']);
+      }
+      return true;
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> deleteProduct(String id) async {
+      try {
+        final url =
+          Uri.parse('$databaseUrl/products/$id.json?auth=$token');
+
+        final response = await http.delete(url);
+        
+        if (response.statusCode!= 200) {
+          throw Exception(json.decode(response.body)['error']);
+        }
+        return true;
+        } catch (error) {
+        print(error);
+        return false;
+      }
   }
 }

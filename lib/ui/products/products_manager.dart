@@ -20,7 +20,7 @@ class ProductsManager with ChangeNotifier {
   }
 
   Future<void> fetchProducts([bool filterByUser = false]) async {
-    _items = await _productsService.fectProducts(filterByUser);
+    _items = await _productsService.fetchProducts(filterByUser);
     notifyListeners();
   }
 
@@ -44,27 +44,26 @@ class ProductsManager with ChangeNotifier {
       return _items.where((prodItem) => prodItem.isFavorite).toList();
     }
 
-    // void addProduct(Product product) {
-    //   _items.add(
-    //     product.coppyWith(
-    //       id: 'p${DateTime.now().toIso8601String()}',
-    //     ),
-    //   );
-    //   notifyListeners();
-    // }
-
-    void updateProduct(Product product) {
+    Future<void> updateProduct(Product product) async {
       final index = _items.indexWhere((item) => item.id == product.id);
       if (index >= 0) {
-        _items[index] = product;
-        notifyListeners();
+        if (await _productsService.updateProduct(product)){
+          _items[index] = product;
+          notifyListeners();
+        }
       }
     }
 
-    void deleteProduct(String id) {
+    Future<void> deleteProduct(String id) async{
       final index = _items.indexWhere((item) => item.id == id);
+      Product? existingProduct = _items[index];
       _items.removeAt(index);
       notifyListeners();
+
+      if(!await _productsService.deleteProduct(id)){
+        _items.insert(index, existingProduct);
+        notifyListeners();
+      }
     }
   
 }
